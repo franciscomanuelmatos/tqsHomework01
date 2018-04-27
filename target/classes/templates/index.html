@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>TQS HW1</title>
+</head>
+<body>
+	<label for="inputCurrency">Choose entry currency: </label>
+	<select name="inputCurrency" id="inputCurrency">
+		<option th:each="cur : ${currencies}"
+		 th:value="${cur}" th:text="${cur}"></option>
+	</select>
+	
+	<label for="outputCurrency">Choose new currency: </label>
+	<select name="outputCurrency" id="outputCurrency">
+		<option th:each="cur : ${currencies}"
+		 th:value="${cur}" th:text="${cur}"></option>
+	</select>
+	
+	<label for="inputValue">Amount: </label>
+	<input type="text" name="inputValue" id="inputValue">
+	<br />
+	
+	<button type="submit" onclick="send()" id="submitButton">Submit</button>
+	
+	<br />
+	<br />
+	
+	<label for="outputValue">Result: </label>
+	<input type="text" name="outputValue" id="outputValue">
+	
+	<script>
+	function send() {
+	    var input = document.getElementById("inputCurrency");
+	    var cur1 = input.options[input.selectedIndex].value;
+	    var output = document.getElementById("outputCurrency");
+	    var cur2 = output.options[output.selectedIndex].value;
+	    var amountField = document.getElementById("inputValue");
+	    var amount = amountField.value;
+	    
+	    var xhr = new XMLHttpRequest();
+	    var uri = `http://localhost:8080/api/conversions?cur1=${cur1}&cur2=${cur2}&amount=${amount}`;
+	    xhr.open("GET", uri, true);
+
+	    //Send the proper header information along with the request
+	    xhr.setRequestHeader("Content-type", "application/json");
+	    xhr.send(null);
+
+	    xhr.onreadystatechange = function() {//Call a function when the state changes.
+	        if(xhr.readyState == XMLHttpRequest.DONE) {
+	        	var outputField = document.getElementById("outputValue");
+	    	    outputField.value = xhr.responseText;
+	        }
+	    }
+	    
+	}
+	</script>
+	
+</body>
+</html>
